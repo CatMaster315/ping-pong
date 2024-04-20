@@ -5,52 +5,14 @@ mixer.init()
 win = display.set_mode((700,500))
 display.set_caption('полетушки')
 clock = time.Clock()
-
 color = 135, 146, 250
 win.fill(color)
 FPS = 60
-
-class gameSprite(sprite.Sprite):
-    def __init__(self, player_image, player_x, player_y, player_speed,player_width, player_height):
-        super().__init__()
-        self.image = transform.scale(image.load(player_image), (player_width, player_height))
-        self.speed = player_speed
-        self.rect = self.image.get_rect()
-        self.rect.x = player_x
-        self.rect.y = player_y
-    def reset(self):
-        win.blit(self.image , (self.rect.x, self.rect.y))
-
-class playerSprite(gameSprite):
-        def movingP1(self):
-            keys_pressed = key.get_pressed()
-            if self.rect.y > 0:
-                if keys_pressed[K_w]:
-                    self.rect.y -= self.speed
-            if self.rect.y < 400:
-                if keys_pressed[K_s]:
-                    self.rect.y += self.speed
-        def movingP2(self):
-            keys_pressed = key.get_pressed()
-            if self.rect.y > 0:
-                if keys_pressed[K_UP]:
-                    self.rect.y -= self.speed
-            if self.rect.y < 400:
-                if keys_pressed[K_DOWN]:
-                    self.rect.y += self.speed
-
-player1 = playerSprite('stek.png', 40, 200, 12, 10, 100)
-player2 = playerSprite('stek.png', 650, 200, 12, 10, 100)
 
 game = True
 while game:
     for e in event.get():
         if e.type == QUIT:
             game = False
-    win.fill(color)
-    player1.movingP1()
-    player2.movingP2()
-    player1.reset()
-    player2.reset()
     clock.tick(FPS)
     display.update()
