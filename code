@@ -10,5 +10,8 @@ win.fill(color)
 FPS = 60
 game = True
 while game:
+    for e in event.get():
+        if e.type == QUIT:
+            game = False
     clock.tick(FPS)
     display.update()
