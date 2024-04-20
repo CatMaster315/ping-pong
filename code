@@ -1,0 +1,14 @@
+from random import *
+from pygame import *
+font.init()
+mixer.init()
+win = display.set_mode((700,500))
+display.set_caption('полетушки')
+clock = time.Clock()
+color = 135, 146, 250
+win.fill(color)
+FPS = 60
+game = True
+while game:
+    clock.tick(FPS)
+    display.update()
