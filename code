@@ -1,0 +1,93 @@
+from random import *
+from pygame import *
+font.init()
+mixer.init()
+win = display.set_mode((700,500))
+display.set_caption('полетушки')
+clock = time.Clock()
+
+color = 135, 146, 250
+win.fill(color)
+FPS = 60
+
+class gameSprite(sprite.Sprite):
+    def __init__(self, player_image, player_x, player_y, player_speed, player_width, player_height):
+        super().__init__()
+        self.image = transform.scale(image.load(player_image), (player_width, player_height))
+        self.speed = player_speed
+        self.rect = self.image.get_rect()
+        self.rect.x = player_x
+        self.rect.y = player_y
+    def reset(self):
+        win.blit(self.image , (self.rect.x, self.rect.y))
+
+class playerSprite(gameSprite):
+        def movingP1(self):
+            keys_pressed = key.get_pressed()
+            if self.rect.y > 0:
+                if keys_pressed[K_w]:
+                    self.rect.y -= self.speed
+            if self.rect.y < 400:
+                if keys_pressed[K_s]:
+                    self.rect.y += self.speed
+        def movingP2(self):
+            keys_pressed = key.get_pressed()
+            if self.rect.y > 0:
+                if keys_pressed[K_UP]:
+                    self.rect.y -= self.speed
+            if self.rect.y < 400:
+                if keys_pressed[K_DOWN]:
+                    self.rect.y += self.speed
+
+class ballSprite(gameSprite):
+    def __init__(self, player_image, player_x, player_y, player_width, player_height, x_speed, y_speed):
+        super().__init__(player_image, player_x, player_y, x_speed, player_width, player_height)
+        self.speed_x = x_speed
+        self.speed_y = y_speed
+    def update(self):
+        self.rect.y += self.speed_y
+        self.rect.x += self.speed_x
+
+
+
+ball = ballSprite('ball.png', 250, 250, 150, 100, 3, 3)
+player1 = playerSprite('stek.png', 40, 200, 12, 10, 100)
+player2 = playerSprite('stek.png', 650, 200, 12, 10, 100)
+
+font1 = font.SysFont('Arial', 35)
+font2 = font.SysFont('Arial', 65)
+
+win1 = font2.render('Игрок 1 выиграл!', 1, (0, 0, 255))
+win2 = font2.render('Игрок 2 выиграл!', 1, (255, 0, 0))
+finish = False
+game = True
+while game:
+    for e in event.get():
+        if e.type == QUIT:
+            game = False
+    if finish == False:
+        win.fill(color)
+        player1.movingP1()
+        player2.movingP2()
+        ball.update()
+        player1.reset()
+        player2.reset()
+        ball.reset()
+        if sprite.collide_rect(player1, ball) or sprite.collide_rect(player2, ball):
+            ball.speed_x *= -1
+        if ball.rect.y > 400 or ball.rect.y < 0:
+            ball.speed_y *= -1
+
+
+        if ball.rect.x > 700:
+                win1 = font2.render('Игрок 1 выиграл!', 1, (0, 0, 255))
+                win.blit(win1, (50,240))
+                finish = True 
+
+
+        if ball.rect.x < 0:
+            win2 = font2.render('Игрок 2 выиграл!', 1, (255, 0, 0))
+            win.blit(win2, (50,240))
+            finish = True 
+    clock.tick(FPS)
+    display.update()
