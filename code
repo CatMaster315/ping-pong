@@ -47,7 +47,26 @@ class ballSprite(gameSprite):
     def update(self):
         self.rect.y += self.speed_y
         self.rect.x += self.speed_x
-
+    def rotate(self):
+        if self.rect.x <= 250:
+            self.x_speed = 3
+        if self.rect.x >= 250:
+            self.x_speed = 3
+            self.x_speed * -1
+    def ball_rotate(self,stick):
+        height = stick.rect.bottom - stick.rect.top
+        if self.rect.y <= stick.rect.y+height*1/4:
+            self.rotate()
+            return -40
+        if self.rect.y <= stick.rect.y+height*2/4:
+            self.rotate()
+            return -20    
+        if self.rect.y <= stick.rect.y+height*3/4:
+            self.rotate()
+            return 20
+        if self.rect.y <= stick.rect.y+height*4/4:
+            self.rotate()
+            return 40
 
 
 ball = ballSprite('ball.png', 250, 250, 150, 100, 3, 3)
@@ -73,7 +92,13 @@ while game:
         player1.reset()
         player2.reset()
         ball.reset()
-        if sprite.collide_rect(player1, ball) or sprite.collide_rect(player2, ball):
+        if sprite.collide_rect(player1, ball):
+            ball.rotate()
+            ball.ball_rotate(player1)
+            ball.speed_x *= -1
+        if sprite.collide_rect(player2, ball):
+            ball.rotate()
+            ball.ball_rotate(player2)
             ball.speed_x *= -1
         if ball.rect.y > 400 or ball.rect.y < 0:
             ball.speed_y *= -1
@@ -85,7 +110,7 @@ while game:
                 finish = True 
 
 
-        if ball.rect.x < 0:
+        if ball.rect.x < -150:
             win2 = font2.render('Игрок 2 выиграл!', 1, (255, 0, 0))
             win.blit(win2, (50,240))
             finish = True 
